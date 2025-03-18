@@ -21,8 +21,6 @@ using (SQLiteConnection connection = new SQLiteConnection(connectionString))
 
 
 
-
-
 // Create table
 using (SQLiteConnection connection2 = new SQLiteConnection(connectionString))
 {
@@ -44,8 +42,34 @@ using (SQLiteConnection connection2 = new SQLiteConnection(connectionString))
 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
 {
     connection.Open();
-    var insertData = @"
-                        
-                    ";
+    var insertData = "INSERT INTO USers (Name, Age) VALUES (@Name, @Age);";
+    using (SQLiteCommand command = new SQLiteCommand(insertData, connection))
+    {
+        command.Parameters.AddWithValue("@Name", "John Doe");
+        command.Parameters.AddWithValue("@Age", 30);
+        var rowsAffected = command.ExecuteNonQuery();
+        Console.WriteLine("Data insrted");
+    }
 }
 
+
+// Query table
+
+using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+{
+    connection.Open();
+    string selectQuery = "SELECT * FROM Users;";
+    using (SQLiteCommand command = new SQLiteCommand(selectQuery, connection))
+    {
+        using (SQLiteDataReader reader = command.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                Console.WriteLine($"ID - {reader["id"]}, Name - {reader["Name"]}, Age-{reader["Age"]}");
+            }
+        }
+    }
+
+}
+
+// close connectio
